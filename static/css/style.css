@@ -1,0 +1,159 @@
+*,
+body {
+    margin: 0;
+    padding: 0;
+}
+body {
+    margin: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    font-size: 16px;
+    line-height: 20px;
+    background-color: #f7f7f7;
+}
+.layui-container a {
+    color: #572c82 !important;
+    text-decoration: none !important;
+}
+a:hover {
+    text-decoration-line: underline;
+}
+
+.system-description {
+    min-height: 160px;
+    text-align: center;
+    padding: 0 140px;
+}
+.system-description p {
+    font-size: 24px;
+}
+.width-visual {
+	width: 1100px;
+	margin: 0 auto
+}
+.page-container {
+    width: 70%;
+}
+.siderbar {
+    width: 30%;
+
+}
+.siderbar .box {
+    background-color: #fff;
+    border-color: #e2e2e2;
+    border-style: solid;
+    border-width: 1px;
+    margin: 10px;
+    padding: 10px;
+}
+.home-page {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.home-page .article {
+    background-color: #fff;
+    border-color: #e2e2e2;
+    border-style: solid;
+    border-width: 1px;
+    margin: 10px;
+    padding: 10px;
+}
+.home-page .article section {
+    font-size: 16px;
+}
+.home-page .article ul li {
+    display: inline-block;
+    width: 22%;
+    border-left: bisque solid 1px;
+    padding: 0 5px;
+    border-right: bisque solid 1px;
+}
+.home-page .article ul li a {
+    display: block;
+    text-align: center;
+}
+.home-page .article section img {
+    max-width: 50%;
+    height: auto;
+}
+.home-page .article-info {
+    color: #6e7373;
+    font-size: 14px;
+    margin-right: 20px;
+}
+.home-page #page {
+    padding-left: 20px;
+}
+
+.article-page article .title-header {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.article-page .title-header h1 {
+    font-size: 22px;
+    line-height: 22px;
+}
+.article-page .description {
+    line-height: 1.8;
+    font-size: 16px;
+}
+.article-page .description p {
+    padding: 10px;
+    word-break: break-all;
+}
+.article-page .description img {
+    max-width: 100%;
+}
+.article-page .article-info li {
+    display: inline;
+}
+.article-page .article-info {
+    font-size: small;
+    color: #6e7373;
+}
+.catalog-page header {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.about-page .description {
+    margin: 20px 0;
+    font-size: 16px;
+}
+.about-page .wechat {
+    text-align: center;
+}
+.about-page .wechat img {
+    width: 20%;
+}
+.message-page textarea {
+    width: 100%;
+}
+.footer-container .info {
+    margin: 30px 20px;
+    text-align: center;
+}
+.footer {
+    background-color: #23262E;
+    color: #999;
+}
+.footer a {
+    color: #999;
+}
+@media screen and (max-width: 768px){
+    .width-visual {
+        width: 100%;
+    }
+    .page-container{
+        width: 100%;
+    }
+    .about-page .wechat img {
+        width: 70%;
+    }
+    .home-page .article section img {
+        max-width: 100%;
+        height: auto;
+    }
+}
