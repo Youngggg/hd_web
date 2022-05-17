@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<!--
+This is a starter template page. Use this page to start your new project from
+scratch. This page gets rid of all links and provides the needed markup only.
+-->
+<html>
+
+<head>
+    <title>首页</title>
+    {{template "admin/html-head.html" .}}
+</head>
+<!--
+BODY TAG OPTIONS:
+=================
+Apply one or more of the following classes to get the
+desired effect
+|---------------------------------------------------------|
+| SKINS         | skin-blue                               |
+|               | skin-black                              |
+|               | skin-purple                             |
+|               | skin-yellow                             |
+|               | skin-red                                |
+|               | skin-green                              |
+|---------------------------------------------------------|
+|LAYOUT OPTIONS | fixed                                   |
+|               | layout-boxed                            |
+|               | layout-top-nav                          |
+|               | sidebar-collapse                        |
+|               | sidebar-mini                            |
+|---------------------------------------------------------|
+-->
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <!-- Main Header -->
+        {{template "admin/html-header.html" .}}
+        <!-- Left side column. contains the logo and sidebar -->
+        {{template "admin/html-aside.html" .}}
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <h1>
+                    User Profile
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                </ol>
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- Profile Image -->
+                        <div class="box box-primary">
+                            <div class="box-body box-profile">
+                                <img class="profile-user-img img-responsive img-circle"
+                                    src="http://hopefully-img.yuedun.wang/FhVgrAON10Nk97pm8lj1X-2Gt28n"
+                                    alt="User profile picture">
+
+                                <h3 class="profile-username text-center">月盾</h3>
+
+                                <p class="text-muted text-center">golang开发工程师</p>
+                            </div>
+                            <div class="box-header with-border">
+                                <h3 class="box-title">关于我</h3>
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-body">
+                                <strong><i class="fa fa-book margin-r-5"></i>目标</strong>
+                                <p class="text-muted">
+                                    每天学习一点点，让每天变得不一样。
+                                </p>
+                                <hr>
+                                <strong><i class="fa fa-map-marker margin-r-5"></i>所在地</strong>
+                                <p class="text-muted">上海</p>
+                                <hr>
+                                <strong><i class="fa fa-pencil margin-r-5"></i>技能</strong>
+                                <p>
+                                    <span class="label label-danger">前端</span>
+                                    <span class="label label-success">MySQL</span>
+                                    <span class="label label-primary">mongodb</span>
+                                    <span class="label label-info">Javascript</span>
+                                    <span class="label label-warning">Golang</span>
+                                    <span class="label label-primary">Node.js</span>
+                                    <span class="label label-danger">Java</span>
+                                </p>
+                                <hr>
+                                <strong><i class="fa fa-moon-o margin-r-5"></i>个人博客</strong>
+                                <p class="text-muted"><a href="http://www.yuedun.wang/?from=hopefly"
+                                        target="_blank">http://www.yuedun.wang</a></p>
+                                <hr>
+                                <strong><i class="fa fa-github margin-r-5"></i>GitHub地址</strong>
+                                <p class="text-muted"><a href="https://github.com/yuedun/hd_web"
+                                        target="_blank">https://github.com/yuedun/hd_web</a></p>
+                                <p>
+                                    <iframe
+                                        src="https://ghbtns.com/github-btn.html?user=yuedun&repo=hd_web&type=star&count=true"
+                                        frameborder="0" scrolling="0" width="100px" height="20px"></iframe>
+                                    <iframe
+                                        src="https://ghbtns.com/github-btn.html?user=yuedun&repo=hd_web&type=fork&count=true"
+                                        frameborder="0" scrolling="0" width="100px" height="20px"></iframe>
+                                </p>
+                                <hr>
+                                <strong><i class="fa fa-file-text-o margin-r-5"></i>备注</strong>
+                                <p>该系统由golang开发，包含登录，权限，用户列表，定时任务，爬虫等功能</p>
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
+                        <!-- /.box -->
+                    </div>
+                </div>
+                <!-- /.row -->
+
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+
+        <!-- Main Footer -->
+        <footer class="main-footer">
+            <!-- To the right -->
+            <div class="pull-right hidden-xs">
+                Anything you want
+            </div>
+            <!-- Default to the left -->
+            <strong>Copyright &copy; 2016 <a href="#">Company</a>.</strong> All rights reserved.
+        </footer>
+
+        <!-- Control Sidebar -->
+        {{template "admin/html-control-sidebar.html"}}
+        <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+
+    <!-- REQUIRED JS SCRIPTS -->
+    {{template "admin/html-js.html"}}
+    <!-- /REQUIRED JS SCRIPTS -->
+
+    <!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. -->
+</body>
+
+</html>

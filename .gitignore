@@ -1,0 +1,38 @@
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+.o
+.a
+.so
+
+# Folders
+_obj
+_test
+
+# Architecture specific extensionsprefixes
+.[568vq]
+[568vq].out
+
+.cgo1.go
+.cgo2.c
+_cgo_defun.c
+_cgo_gotypes.go
+_cgo_export.
+
+.idea
+lastupdate.tmp
+
+_testmain.go
+
+.exe
+.test
+.prof
+app.conf
+
+*.exe
+*.exe~
+
+tmp/
+nohup.out
+hd_web
+main
+logs/
+views/AdminLTE-2.4.3/package-lock.json

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-cn-Hans">
+
+<head>
+    <title>{{.title}}</title>
+    <meta name="keywords" content="{{.keywords}}">
+    <meta name="description" content="{{.description}}">
+    {{template "./layout-head.html" .}}
+</head>
+
+<body>
+    <div class="layui-layout layui-layout-admin">
+        <!-- 顶部栏 -->
+        {{template "./layout-menu.html"}}
+        <!-- 顶部栏 -->
+        <!-- 中间内容区 -->
+        <section class="home-page width-visual">
+            <div class="page-container">
+                {{range $index, $elem := .articleList}}
+                <article class="article">
+                    <header>
+                        <h2><a href="/article/{{$elem.Id}}" title="{{$elem.Title}}">{{$elem.Title}}</a></h2>
+                        <time class="article-info">{{$elem.UpdatedAt}}</time>
+                        <span class="article-info">分类：<a href="/categories/{{$elem.Category}}">{{$elem.Category}}</a></span>
+                        <span class="article-info">浏览：{{$elem.ViewCount}}</span>
+                    </header>
+                    <section>
+                        <p>{{str2html $elem.Content}}</p>
+                        <p>{{str2html $elem.Img}}</p>
+                    </section>
+                </article>
+                {{end}}
+                <div id="page"></div>
+            </div>
+            {{/*template "./partials/asider.html"*/}}
+        </section>
+    </div>
+    {{template "./layout-footer.html"}}
+    <script>
+        layui.use(['jquery', 'laypage'], function () {
+            var laypage = layui.laypage;
+            var $ = layui.jquery;
+
+            var current = '{{.pageNo}}';
+            var pageSize = '{{.pageSize}}';
+            var total = '{{.total}}';
+            //执行一个laypage实例
+            laypage.render({
+                elem: 'page' //注意，这里的 test1 是 ID，不用加 # 号
+                , limit: pageSize
+                , curr: parseInt(current)
+                , count: total //数据总数，从服务端得到
+                , hash: true
+                , jump: function (obj, first) {
+                    if (!first) {
+                        location.href = '/?pageNo=' + obj.curr + '&pageSize=' + pageSize;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

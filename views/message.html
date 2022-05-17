@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-cn-Hans">
+
+<head>
+    <title>留言-月盾的网站</title>
+    <meta name="keywords" content="golang,go-micro,博客,管理后台">
+    <meta name="description" content="golang,go-micro,博客,管理后台">
+    {{template "./layout-head.html" .}}
+</head>
+
+<body>
+    <div class="layui-layout layui-layout-admin">
+        <!-- 顶部栏 -->
+        {{template "./layout-menu.html"}}
+        <!-- 顶部栏 -->
+        <!-- 中间内容区 -->
+        <section class="message-page  width-visual">
+            <div class="layui-container page-container">
+                <ul class="layui-timeline">
+                    {{range $index, $elem := .messageList}}
+                    <li class="layui-timeline-item">
+                        <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                        <div class="layui-timeline-content layui-text">
+                            <h3 class="layui-timeline-title">{{$elem.NickName}}</h3>
+                            <p>{{$elem.Content}}</p>
+                            <p>创建于：{{$elem.CreatedAt}}</p>
+                        </div>
+                    </li>
+                    {{end}}
+                </ul>
+                <div class="layui-row">
+                    <div class="layui-col-md12">
+                        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                            <legend>留言</legend>
+                        </fieldset>
+                        <form class="layui-form" onsubmit="return false">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">昵称：</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="nickName" required lay-verify="required" placeholder="请输入昵称" autocomplete="off"
+                                            class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">邮箱：</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="email" required lay-verify="required"
+                                            placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">留言：</label>
+                                <div class="layui-input-block">
+                                    <textarea placeholder="请输入内容" class="layui-textarea" name="content"
+                                        lay-verify="required"></textarea>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button type="submit" class="layui-btn" lay-submit=""
+                                        lay-filter="message-btn">立即提交</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        {{template "./layout-footer.html"}}
+    </div>
+    <script>
+        layui.use(['jquery', 'form'], function () {
+            var $ = layui.jquery;
+            var form = layui.form;
+
+            //监听提交
+            form.on('submit(message-btn)', function (data) {
+                console.log(data.field);
+                $.ajax({
+                    url: '/message',
+                    type: 'POST', //GET
+                    data: data.field,
+                    timeout: 5000,    //超时时间
+                    dataType: 'json',    //返回的数据格式：json/xml/html/script/jsonp/text
+                    beforeSend: function (xhr) {
+                        console.log('发送前')
+                    },
+                    success: function (res, textStatus, jqXHR) {
+                        if (res.code == 1) {
+                            layer.msg(res.msg, { icon: 5 });
+                            return
+                        } else {
+                            layer.msg("留言成功，等待审核后显示！");
+                        }
+                    },
+                    error: function (xhr, textStatus) {
+                        console.log('错误')
+                    },
+                    complete: function () {
+                        console.log('结束')
+                    }
+                })
+                return false;
+            });
+        });
+    </script>
+</body>
+
+</html>
