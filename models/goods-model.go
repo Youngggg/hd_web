@@ -30,23 +30,6 @@ type GoodsVO struct {
 	UpdatedAt string `json:"updated_at"`
 }
 
-type FindGoodsDetailRes struct {
-	Code int                  `json:"code"`
-	Data *FindGoodsDetailData `json:"data"`
-}
-
-type FindGoodsDetailData struct {
-	GoodsId       string  `json:"goodsId"`
-	NeedCheck     bool    `json:"needCheck"`
-	SalesPrice    float64 `json:"salesPrice"`
-	EstimatePrice float64 `json:"estimatePrice"`
-	IsPackage     int     `json:"isPackage"`
-	Active        int     `json:"active"`
-	Count         int     `json:"count"`
-	SmallImage    string  `json:"smallImage"`
-	ProductName   string  `json:"productName"`
-}
-
 func init() {
 	// 需要在init中注册定义的model
 	orm.RegisterModel(new(Goods))
@@ -74,7 +57,7 @@ func (goods *Goods) GetById() (*Goods, error) {
 func (goods *Goods) GetAll() ([]Goods, error) {
 	o := orm.NewOrm()
 	var goodsList []Goods
-	num, err := o.Raw("SELECT * FROM goods").QueryRows(&goodsList)
+	num, err := o.Raw("SELECT * FROM goods where status = 1").QueryRows(&goodsList)
 	logs.Info("查询到", num, "条数据")
 	return goodsList, err
 

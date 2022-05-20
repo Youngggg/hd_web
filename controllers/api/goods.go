@@ -2,21 +2,22 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/beego/beego/v2/core/logs"
-	"github.com/go-resty/resty/v2"
 
 	"hd_web/controllers"
 	. "hd_web/models"
+	"hd_web/util"
 )
 
 type GoodsAPIController struct {
 	controllers.AdminBaseController
 }
+
+var token string
 
 /**
  * 新增商品
@@ -122,7 +123,11 @@ func (c *GoodsAPIController) GoodsList() {
 			goodsVo.UpdatedAt = g.UpdatedAt.Format("2006-01-02 15:04:05")
 
 			goodsId := strings.Replace(g.Url, "https://mini.hndutyfree.com.cn/#/pages/publicPages/goodDetails/index?goodsId=", "", -1)
-			goodsDetail := FindGoodsDetail(goodsId)
+			if token == "" {
+				token = util.LoginWithPassword("18818693510", "aa123456")
+			}
+			goodsDetail := util.FindGoodsDetail(goodsId, token)
+
 			if goodsDetail != nil && goodsDetail.Data != nil {
 				goodsVo.Image = goodsDetail.Data.SmallImage
 				goodsVo.Name = goodsDetail.Data.ProductName
@@ -192,37 +197,4 @@ func (c *GoodsAPIController) DeleteGoods() {
 		c.Data["json"] = controllers.SuccessData(id64)
 	}
 	c.ServeJSON()
-}
-
-func FindGoodsDetail(goodsId string) *FindGoodsDetailRes {
-	findGoodsDetailRes := FindGoodsDetailRes{}
-	res, err := GetRestyClient().R().
-		SetHeader("token", "80HI3OHUQ01E31TNV9B06BET0A").
-		SetQueryParam("goodsId", goodsId).
-		SetResult(&findGoodsDetailRes).
-		Get("https://service.hndutyfree.com.cn/mini/findGoodsDetailByIdAlways")
-
-	if err != nil {
-		fmt.Println(err)
-	}
-	if findGoodsDetailRes.Data != nil {
-		fmt.Println(time.Now().Format("2006-01-02 15:04:05"), " | 商品Id: ", findGoodsDetailRes.Data.GoodsId, " | 商品数量: ", findGoodsDetailRes.Data.Count)
-	} else {
-		fmt.Println(res)
-	}
-	return &findGoodsDetailRes
-}
-
-var _resty *resty.Client
-
-func init() {
-	_resty = resty.New().
-		SetTimeout(10 * time.Second).
-		SetRetryCount(2).
-		SetRetryWaitTime(1 * time.Second).
-		SetRetryMaxWaitTime(1 * time.Second)
-}
-
-func GetRestyClient() *resty.Client {
-	return _resty
 }

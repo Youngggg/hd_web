@@ -77,7 +77,10 @@ func init() {
 }
 
 func main() {
-	util.CronStart() //启动定时任务
+	//util.CronStart() //启动定时任务
+
+	go util.StartWinOrders() // 抢单
+
 	log.Printf("\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n浏览器访问：http://localhost:%s\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", port)
 	beego.Run() //下面的代码不会执行，需要执行的代码放到上面
 }
