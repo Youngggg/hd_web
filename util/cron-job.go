@@ -80,56 +80,56 @@ func StartWinOrders() {
 				}
 
 				for _, good := range goods {
-					go func(good Goods, token, uName string) {
-						goodsId := strings.Replace(good.Url, "https://mini.hndutyfree.com.cn/#/pages/publicPages/goodDetails/index?goodsId=", "", -1)
+					//go func(good Goods, token, uName string) {
+					goodsId := strings.Replace(good.Url, "https://mini.hndutyfree.com.cn/#/pages/publicPages/goodDetails/index?goodsId=", "", -1)
 
-						// 获取商品详情
-						gd := FindGoodsDetail(goodsId, token)
-						if gd == nil || gd.Data == nil {
+					// 获取商品详情
+					gd := FindGoodsDetail(goodsId, token)
+					if gd == nil || gd.Data == nil {
+						return
+					}
+
+					if gd.Code == 1024 {
+						token = ""
+						return
+					}
+
+					// 判断是否使用折扣并且无折扣价
+					if good.IsDiscount == 1 && gd.Data.EstimatePrice == 0 {
+						return
+					}
+
+					// 商品数量大于0开抢
+					if gd.Data.Count > 0 {
+						pointMax := "0"
+						pointRemain := "0"
+						countString := strconv.Itoa(good.Count)
+
+						// 获取订单详情
+						order := GetPrepareOrderWithGoods(goodsId, countString, pointMax, pointRemain, token)
+						if order == nil || order.Code != 0 || order.Data == nil {
 							return
 						}
 
-						if gd.Code == 1024 {
-							token = ""
-							return
+						// 获取积分详情
+						point := GetMemberPointClosed(token)
+
+						// 积分满足则重新下单
+						if good.UsePoints == 1 && point != nil && point.Data != nil && int(math.Floor(point.Data.Data)) >= order.Data.PointMax {
+							pointMax = strconv.Itoa(order.Data.PointMax)
+							pointRemain = strconv.Itoa(int(math.Floor(point.Data.Data)))
+							order = GetPrepareOrderWithGoods(goodsId, countString, pointMax, pointRemain, token)
 						}
 
-						// 判断是否使用折扣并且无折扣价
-						if good.IsDiscount == 1 && gd.Data.EstimatePrice == 0 {
-							return
-						}
+						// 确认订单
+						ConfirmOrderWithGoods(order, goodsId, countString, pointMax, token)
 
-						// 商品数量大于0开抢
-						if gd.Data.Count > 0 {
-							pointMax := "0"
-							pointRemain := "0"
-							countString := strconv.Itoa(good.Count)
+						// 支付确认
+						PayConfirm(order, token, username, gd.Data.ProductName)
 
-							// 获取订单详情
-							order := GetPrepareOrderWithGoods(goodsId, countString, pointMax, pointRemain, token)
-							if order == nil {
-								return
-							}
+					}
 
-							// 获取积分详情
-							point := GetMemberPointClosed(token)
-
-							// 积分满足则重新下单
-							if point != nil && point.Data != nil && int(math.Floor(point.Data.Data)) >= order.Data.PointMax && good.UsePoints == 1 {
-								pointMax = strconv.Itoa(order.Data.PointMax)
-								pointRemain = strconv.Itoa(int(math.Floor(point.Data.Data)))
-								order = GetPrepareOrderWithGoods(goodsId, countString, pointMax, pointRemain, token)
-							}
-
-							// 确认订单
-							ConfirmOrderWithGoods(order, goodsId, countString, pointMax, token)
-
-							// 支付确认
-							PayConfirm(order, token, uName, gd.Data.ProductName)
-
-						}
-
-					}(good, token, username)
+					//}(good, token, username)
 				}
 
 			}(u, p)

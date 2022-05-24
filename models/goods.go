@@ -35,7 +35,6 @@ type GetPrepareOrderWithGoodsRes struct {
 }
 
 type GetPrepareOrderWithGoodsResData struct {
-	Code               int            `json:"code"`
 	TotalCount         int            `json:"totalCount"`
 	MainOrderId        string         `json:"mainOrderId"`
 	OriginalAmount     float64        `json:"originalAmount"`
