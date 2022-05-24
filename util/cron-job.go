@@ -17,12 +17,17 @@ import (
 
 type MyJob struct{}
 
-var AccountMap = map[string]string{
-	//"15323335582": "aa123456",
-	"13345539412": "liyu1201",
-	//"18818693510": "aa123456",
-}
-var TokenMap = map[string]string{}
+var (
+	AccountMap = map[string]string{
+		//"15323335582": "aa123456",
+		"13345539412": "liyu1201",
+		//"18818693510": "aa123456",
+	}
+
+	TokenMap = map[string]string{}
+
+	token string
+)
 
 func (job MyJob) Run() {
 	logs.Info("职位统计任务，单任务")
@@ -57,7 +62,6 @@ func StartWinOrders() {
 			go func(username, password string) {
 
 				// 获取用户token
-				token := ""
 				if val, has := TokenMap[username]; has {
 					token = val
 				} else {
@@ -111,7 +115,7 @@ func StartWinOrders() {
 							point := GetMemberPointClosed(token)
 
 							// 积分满足则重新下单
-							if point != nil && int(math.Floor(point.Data.Data)) >= order.Data.PointMax && good.UsePoints == 1 {
+							if point != nil && point.Data != nil && int(math.Floor(point.Data.Data)) >= order.Data.PointMax && good.UsePoints == 1 {
 								pointMax = strconv.Itoa(order.Data.PointMax)
 								pointRemain = strconv.Itoa(int(math.Floor(point.Data.Data)))
 								order = GetPrepareOrderWithGoods(goodsId, countString, pointMax, pointRemain, token)

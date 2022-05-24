@@ -64,13 +64,15 @@ type MemberAddress struct {
 }
 
 type GetMemberPointRes struct {
-	Code int `json:"code"`
-	Data struct {
-		Check       int     `json:"check"`
-		Data        float64 `json:"data"`
-		Closed      int     `json:"closed"`
-		ClosedPoint float64 `json:"closedPoint"`
-	} `json:"data"`
+	Code int                    `json:"code"`
+	Data *GetMemberPointResData `json:"data"`
+}
+
+type GetMemberPointResData struct {
+	Check       int     `json:"check"`
+	Data        float64 `json:"data"`
+	Closed      int     `json:"closed"`
+	ClosedPoint float64 `json:"closedPoint"`
 }
 
 type ConfirmOrderWithGoodsRes struct {
