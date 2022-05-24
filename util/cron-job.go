@@ -65,7 +65,7 @@ func StartWinOrders() {
 				if val, has := TokenMap[username]; has {
 					token = val
 				} else {
-					time.Sleep(3 * time.Minute)
+					time.Sleep(3 * time.Second)
 					token = LoginWithPassword(username, password)
 				}
 				if token == "" {
