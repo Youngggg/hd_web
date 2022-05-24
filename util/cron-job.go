@@ -18,7 +18,7 @@ import (
 type MyJob struct{}
 
 var AccountMap = map[string]string{
-	"15323335582": "aa123456",
+	//"15323335582": "aa123456",
 	"13345539412": "liyu1201",
 	//"18818693510": "aa123456",
 }
@@ -61,7 +61,7 @@ func StartWinOrders() {
 				if val, has := TokenMap[username]; has {
 					token = val
 				} else {
-					time.Sleep(1 * time.Second)
+					time.Sleep(3 * time.Minute)
 					token = LoginWithPassword(username, password)
 				}
 				if token == "" {
@@ -82,6 +82,11 @@ func StartWinOrders() {
 						// 获取商品详情
 						gd := FindGoodsDetail(goodsId, token)
 						if gd == nil || gd.Data == nil {
+							return
+						}
+
+						if gd.Code == 1024 {
+							token = ""
 							return
 						}
 
@@ -116,7 +121,7 @@ func StartWinOrders() {
 							ConfirmOrderWithGoods(order, goodsId, countString, pointMax, token)
 
 							// 支付确认
-							PayConfirm(order, token, uName)
+							PayConfirm(order, token, uName, gd.Data.ProductName)
 
 						}
 
@@ -125,7 +130,7 @@ func StartWinOrders() {
 
 			}(u, p)
 
-			time.Sleep(1 * time.Minute)
+			time.Sleep(5 * time.Second)
 		}
 
 	}
