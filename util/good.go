@@ -170,8 +170,8 @@ func DingdingWarning(username, productName string) {
 		MsgType: "markdown",
 		Markdown: &Markdown{
 			Title: "hd下单成功提示",
-			Text: "#### **hd下单成功 账号:" + username + " ** \n" +
-				"#### **商品名称:" + productName + " ** \n",
+			Text: "> **hd下单成功账号:**" + username + "\n" +
+				"\n" + "> **商品名称:**" + productName + "\n",
 		},
 		At: &At{
 			AtMobiles: []string{"18818693510"},
