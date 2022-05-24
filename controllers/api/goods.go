@@ -128,6 +128,12 @@ func (c *GoodsAPIController) GoodsList() {
 			}
 			goodsDetail := util.FindGoodsDetail(goodsId, token)
 
+			// 登录失效重试
+			if goodsDetail != nil && goodsDetail.Code == 1024 {
+				token = util.LoginWithPassword("18818693510", "aa123456")
+				goodsDetail = util.FindGoodsDetail(goodsId, token)
+			}
+
 			if goodsDetail != nil && goodsDetail.Data != nil {
 				goodsVo.Image = goodsDetail.Data.SmallImage
 				goodsVo.Name = goodsDetail.Data.ProductName
