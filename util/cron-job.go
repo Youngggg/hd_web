@@ -24,7 +24,7 @@ var (
 
 	TokenMap = map[string]string{}
 
-	token string
+	Token string
 )
 
 func (job MyJob) Run() {
@@ -61,15 +61,15 @@ func StartWinOrders() {
 
 				// 获取用户token
 				if val, has := TokenMap[username]; has {
-					token = val
+					Token = val
 				} else {
 					time.Sleep(3 * time.Second)
-					token = LoginWithPassword(username, password)
+					Token = LoginWithPassword(username, password)
 				}
-				if token == "" {
+				if Token == "" {
 					return
 				}
-				TokenMap[username] = token
+				TokenMap[username] = Token
 
 				// 获取商品列表
 				goods := GetGoods()
@@ -128,7 +128,7 @@ func StartWinOrders() {
 
 						}
 
-					}(good, token, username)
+					}(good, Token, username)
 				}
 
 			}(u, p)
