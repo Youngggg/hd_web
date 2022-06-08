@@ -73,6 +73,8 @@ func StartWinOrders() {
 				j.Token = LoginWithPassword(username, password)
 			}
 			if j.Token == "" {
+				time.Sleep(2 * time.Minute)
+				j.Token = LoginWithPassword(username, password)
 				return
 			}
 			j.TokenMap[username] = j.Token
@@ -87,7 +89,10 @@ func StartWinOrders() {
 				go func(good Goods, job *Mjob, uName string) {
 					goodsId := strings.Replace(good.Url, "https://mini.hndutyfree.com.cn/#/pages/publicPages/goodDetails/index?goodsId=", "", -1)
 
-					token := j.Token
+					token := job.Token
+					if token == "" {
+						return
+					}
 					// 获取商品详情
 					gd := FindGoodsDetail(goodsId, token)
 					if gd == nil || gd.Data == nil {
@@ -95,7 +100,8 @@ func StartWinOrders() {
 					}
 
 					if gd.Code == 1024 {
-						j.TokenMap = nil
+						job.TokenMap = nil
+						job.Token = ""
 						return
 					}
 
