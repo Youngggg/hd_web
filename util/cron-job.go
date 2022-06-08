@@ -89,7 +89,6 @@ func StartWinOrders() {
 
 					if gd.Code == 1024 {
 						TokenMap = nil
-						time.Sleep(2 * time.Minute)
 						return
 					}
 
