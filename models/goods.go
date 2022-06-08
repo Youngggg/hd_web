@@ -1,8 +1,10 @@
 package models
 
 type FindGoodsDetailRes struct {
-	Code int                  `json:"code"`
-	Data *FindGoodsDetailData `json:"data"`
+	Code      int                  `json:"code"`
+	Data      *FindGoodsDetailData `json:"data"`
+	RequestId string               `json:"requestId"`
+	Message   string               `json:"message"`
 }
 
 type FindGoodsDetailData struct {

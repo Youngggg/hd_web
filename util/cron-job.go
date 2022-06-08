@@ -1,9 +1,11 @@
 package util
 
 import (
+	"fmt"
 	"math"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	. "hd_web/models"
@@ -15,8 +17,7 @@ import (
 
 type MyJob struct{}
 
-type Mjob struct {
-	Token    string
+type MJob struct {
 	TokenMap map[string]string
 }
 
@@ -26,6 +27,10 @@ var (
 		//"13345539412": "liyu1201",
 		//"18818693510": "aa123456",
 	}
+
+	J *MJob
+
+	ResetChan = make(chan bool)
 )
 
 func (job MyJob) Run() {
@@ -55,29 +60,12 @@ func StartWinOrders() {
 
 	for {
 
-		j := &Mjob{
-			Token:    "",
-			TokenMap: nil,
-		}
-
 		// 遍历用户
 		for username, password := range AccountMap {
 
 			//go func(username, password string) {
 
-			// 获取用户token
-			if val, has := j.TokenMap[username]; has {
-				j.Token = val
-			} else {
-				time.Sleep(2 * time.Minute)
-				j.Token = LoginWithPassword(username, password)
-			}
-			if j.Token == "" {
-				time.Sleep(2 * time.Minute)
-				j.Token = LoginWithPassword(username, password)
-				return
-			}
-			j.TokenMap[username] = j.Token
+			InitJ(username, password)
 
 			// 获取商品列表
 			goods := GetGoods()
@@ -85,23 +73,40 @@ func StartWinOrders() {
 				time.Sleep(time.Minute)
 			}
 
+			fmt.Printf("J: %p", J)
+
+			var wg sync.WaitGroup
 			for _, good := range goods {
-				go func(good Goods, job *Mjob, uName string) {
+				go func(good Goods, uName string, job *MJob) {
+
+					wg.Add(1)
+
 					goodsId := strings.Replace(good.Url, "https://mini.hndutyfree.com.cn/#/pages/publicPages/goodDetails/index?goodsId=", "", -1)
 
-					token := job.Token
-					if token == "" {
-						return
-					}
-					// 获取商品详情
-					gd := FindGoodsDetail(goodsId, token)
-					if gd == nil || gd.Data == nil {
+					token := ""
+					if val, has := J.TokenMap[uName]; has {
+						token = val
+					} else {
 						return
 					}
 
-					if gd.Code == 1024 {
-						job.TokenMap = nil
-						job.Token = ""
+					// 获取商品详情
+					gd := FindGoodsDetail(goodsId, token)
+					if gd == nil {
+						return
+					}
+
+					fmt.Printf("job: %p", job)
+					fmt.Println(*gd)
+					if gd.Code == 1024 || gd.Message == "需重新登录" {
+						J = nil
+						job = nil
+						ResetChan <- true
+						fmt.Println("reset: ", J, job, ResetChan)
+						return
+					}
+
+					if gd.Data == nil {
 						return
 					}
 
@@ -140,14 +145,17 @@ func StartWinOrders() {
 
 					}
 
-				}(good, j, username)
+					wg.Done()
+
+				}(good, username, J)
 			}
+
+			wg.Wait()
+			time.Sleep(1 * time.Second)
 
 			//}(u, p)
 
 		}
-
-		time.Sleep(1 * time.Second)
 
 	}
 
@@ -167,4 +175,31 @@ func GetGoods() []Goods {
 	}
 
 	return goodsList
+}
+
+func InitJ(username, password string) {
+
+	select {
+	case reset := <-ResetChan:
+
+		fmt.Println("reset chan: ", reset)
+		if reset {
+			time.Sleep(2 * time.Minute)
+			J = &MJob{}
+			J.TokenMap = map[string]string{}
+			J.TokenMap[username] = LoginWithPassword(username, password)
+		}
+
+	default:
+
+		// 获取用户token
+		if J == nil {
+			J = &MJob{}
+			J.TokenMap = map[string]string{}
+			J.TokenMap[username] = LoginWithPassword(username, password)
+		} else {
+
+		}
+
+	}
 }
