@@ -19,8 +19,8 @@ type MyJob struct{}
 
 var (
 	AccountMap = map[string]string{
-		//"15323335582": "aa123456",
-		"13345539412": "liyu1201",
+		"15323335582": "aa123456",
+		//"13345539412": "liyu1201",
 		//"18818693510": "aa123456",
 	}
 
@@ -91,6 +91,7 @@ func StartWinOrders() {
 
 					if gd.Code == 1024 {
 						token = ""
+						time.Sleep(2 * time.Minute)
 						return
 					}
 
