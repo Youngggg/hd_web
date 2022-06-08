@@ -15,16 +15,17 @@ import (
 
 type MyJob struct{}
 
+type Mjob struct {
+	Token    string
+	TokenMap map[string]string
+}
+
 var (
 	AccountMap = map[string]string{
 		"15323335582": "aa123456",
 		//"13345539412": "liyu1201",
 		//"18818693510": "aa123456",
 	}
-
-	TokenMap = map[string]string{}
-
-	Token string
 )
 
 func (job MyJob) Run() {
@@ -54,22 +55,27 @@ func StartWinOrders() {
 
 	for {
 
+		j := &Mjob{
+			Token:    "",
+			TokenMap: nil,
+		}
+
 		// 遍历用户
 		for username, password := range AccountMap {
 
 			//go func(username, password string) {
 
 			// 获取用户token
-			if val, has := TokenMap[username]; has {
-				Token = val
+			if val, has := j.TokenMap[username]; has {
+				j.Token = val
 			} else {
 				time.Sleep(2 * time.Minute)
-				Token = LoginWithPassword(username, password)
+				j.Token = LoginWithPassword(username, password)
 			}
-			if Token == "" {
+			if j.Token == "" {
 				return
 			}
-			TokenMap[username] = Token
+			j.TokenMap[username] = j.Token
 
 			// 获取商品列表
 			goods := GetGoods()
@@ -78,9 +84,10 @@ func StartWinOrders() {
 			}
 
 			for _, good := range goods {
-				go func(good Goods, token, uName string) {
+				go func(good Goods, job *Mjob, uName string) {
 					goodsId := strings.Replace(good.Url, "https://mini.hndutyfree.com.cn/#/pages/publicPages/goodDetails/index?goodsId=", "", -1)
 
+					token := j.Token
 					// 获取商品详情
 					gd := FindGoodsDetail(goodsId, token)
 					if gd == nil || gd.Data == nil {
@@ -88,7 +95,7 @@ func StartWinOrders() {
 					}
 
 					if gd.Code == 1024 {
-						TokenMap = nil
+						j.TokenMap = nil
 						return
 					}
 
@@ -127,13 +134,14 @@ func StartWinOrders() {
 
 					}
 
-				}(good, Token, username)
+				}(good, j, username)
 			}
 
 			//}(u, p)
 
-			time.Sleep(1 * time.Second)
 		}
+
+		time.Sleep(1 * time.Second)
 
 	}
 
