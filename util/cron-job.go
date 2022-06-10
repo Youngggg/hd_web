@@ -148,6 +148,10 @@ func StartWinOrders() {
 					wg.Done()
 
 				}(good, username, J)
+
+				if J == nil {
+					break
+				}
 			}
 
 			wg.Wait()
