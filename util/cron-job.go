@@ -19,6 +19,7 @@ type MyJob struct{}
 
 type MJob struct {
 	TokenMap map[string]string
+	IsReset  bool
 }
 
 var (
@@ -63,8 +64,6 @@ func StartWinOrders() {
 		// 遍历用户
 		for username, password := range AccountMap {
 
-			//go func(username, password string) {
-
 			InitJ(username, password)
 
 			// 获取商品列表
@@ -77,6 +76,11 @@ func StartWinOrders() {
 
 			var wg sync.WaitGroup
 			for _, good := range goods {
+
+				if J.IsReset {
+					break
+				}
+
 				go func(good Goods, uName string, job *MJob) {
 
 					wg.Add(1)
@@ -87,22 +91,22 @@ func StartWinOrders() {
 					if val, has := J.TokenMap[uName]; has {
 						token = val
 					} else {
+						wg.Done()
 						return
 					}
 
 					// 获取商品详情
 					gd := FindGoodsDetail(goodsId, token)
 					if gd == nil {
+						wg.Done()
 						return
 					}
 
-					fmt.Printf("job: %p", job)
-					fmt.Println(*gd)
 					if gd.Code == 1024 || gd.Message == "需重新登录" {
-						J = nil
-						job = nil
-						ResetChan <- true
+						J.IsReset = true
+						//ResetChan <- true
 						fmt.Println("reset: ", J, job, ResetChan)
+						wg.Done()
 						return
 					}
 
@@ -112,6 +116,7 @@ func StartWinOrders() {
 
 					// 判断是否使用折扣并且无折扣价
 					if good.IsDiscount == 1 && gd.Data.EstimatePrice == 0 {
+						wg.Done()
 						return
 					}
 
@@ -124,6 +129,7 @@ func StartWinOrders() {
 						// 获取订单详情
 						order := GetPrepareOrderWithGoods(goodsId, countString, pointMax, pointRemain, token)
 						if order == nil || order.Code != 0 || order.Data == nil {
+							wg.Done()
 							return
 						}
 
@@ -143,21 +149,16 @@ func StartWinOrders() {
 						// 支付确认
 						PayConfirm(order, token, username, gd.Data.ProductName)
 
-					}
+						wg.Done()
 
-					wg.Done()
+					}
 
 				}(good, username, J)
 
-				if J == nil {
-					break
-				}
 			}
 
 			wg.Wait()
 			time.Sleep(1 * time.Second)
-
-			//}(u, p)
 
 		}
 
@@ -183,27 +184,38 @@ func GetGoods() []Goods {
 
 func InitJ(username, password string) {
 
-	select {
-	case reset := <-ResetChan:
-
-		fmt.Println("reset chan: ", reset)
-		if reset {
-			time.Sleep(2 * time.Minute)
-			J = &MJob{}
-			J.TokenMap = map[string]string{}
-			J.TokenMap[username] = LoginWithPassword(username, password)
-		}
-
-	default:
-
-		// 获取用户token
-		if J == nil {
-			J = &MJob{}
-			J.TokenMap = map[string]string{}
-			J.TokenMap[username] = LoginWithPassword(username, password)
-		} else {
-
-		}
-
+	if J == nil {
+		J = &MJob{}
+		J.TokenMap = map[string]string{}
+		J.TokenMap[username] = LoginWithPassword(username, password)
 	}
+
+	if J.IsReset {
+		time.Sleep(2 * time.Minute)
+		J = &MJob{}
+		J.TokenMap = map[string]string{}
+		J.TokenMap[username] = LoginWithPassword(username, password)
+	}
+	//select {
+	//case reset := <-ResetChan:
+	//
+	//	fmt.Println("reset chan: ", reset)
+	//	if reset {
+	//		time.Sleep(2 * time.Minute)
+	//		J = &MJob{}
+	//		J.TokenMap = map[string]string{}
+	//		J.TokenMap[username] = LoginWithPassword(username, password)
+	//	}
+	//
+	//default:
+	//
+	//	// 获取用户token
+	//	if J == nil {
+	//		J = &MJob{}
+	//		J.TokenMap = map[string]string{}
+	//		J.TokenMap[username] = LoginWithPassword(username, password)
+	//	} else {
+	//
+	//	}
+
 }
