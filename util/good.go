@@ -152,7 +152,7 @@ func ConfirmOrderWithGoods(order *GetPrepareOrderWithGoodsRes, goodsId, count, p
 	logs.Info(res)
 }
 
-func PayConfirm(order *GetPrepareOrderWithGoodsRes, token, username, productName string) {
+func PayConfirm(order *GetPrepareOrderWithGoodsRes, token, username string, gd *FindGoodsDetailRes) {
 	result := PayConfirmRes{}
 	res, err := GetRestyClient().R().
 		SetHeader("token", token).
@@ -166,18 +166,20 @@ func PayConfirm(order *GetPrepareOrderWithGoodsRes, token, username, productName
 		logs.Error(err)
 	}
 	if result.Code == 0 {
-		DingdingWarning(username, productName)
+		DingdingWarning(username, gd)
 	}
 	logs.Info(res)
 }
 
-func DingdingWarning(username, productName string) {
+func DingdingWarning(username string, gd *FindGoodsDetailRes) {
+	gdJson, _ := json.Marshal(gd)
 	msg := Msg{
 		MsgType: "markdown",
 		Markdown: &Markdown{
 			Title: "hd下单成功提示",
 			Text: "> **hd下单成功账号:**" + username + "\n" +
-				"\n" + "> **商品名称:**" + productName + "\n",
+				"\n" + "> **商品名称:**" + gd.Data.ProductName + "\n" +
+				"\n" + "> **商品详情:**" + string(gdJson) + "\n",
 		},
 		At: &At{
 			AtMobiles: []string{"18818693510"},
