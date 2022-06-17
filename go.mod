@@ -22,6 +22,7 @@ require (
 	github.com/robfig/cron v1.2.0
 	github.com/russross/blackfriday/v2 v2.1.0
 	github.com/shirou/gopsutil v3.21.6+incompatible
+	github.com/siddontang/go v0.0.0-20170517070808-cb568a3e5cc0
 	github.com/smartystreets/goconvey v1.6.4
 	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.7 // indirect

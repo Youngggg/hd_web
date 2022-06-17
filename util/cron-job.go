@@ -148,7 +148,7 @@ func StartWinOrders() {
 						ConfirmOrderWithGoods(order, goodsId, countString, pointMax, token)
 
 						// 支付确认
-						PayConfirm(order, token, username, gd.Data.ProductName)
+						PayConfirm(order, token, username, gd)
 
 						wg.Done()
 
