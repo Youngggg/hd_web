@@ -28,7 +28,7 @@ var (
 		//"13514105572": "aa123456",
 		//"13401159806": "aa123456",
 		//"13345539412": "liyu1201",
-		"18818693510": "aa123456",
+		//"18818693510": "aa123456",
 	}
 
 	J *MJob
@@ -83,9 +83,11 @@ func StartWinOrders() {
 					break
 				}
 
+				wg.Add(1)
+
 				go func(good Goods, uName string, job *MJob) {
 
-					wg.Add(1)
+					defer wg.Done()
 
 					goodsId := strings.Replace(good.Url, "https://mini.hndutyfree.com.cn/#/pages/publicPages/goodDetails/index?goodsId=", "", -1)
 
@@ -93,14 +95,12 @@ func StartWinOrders() {
 					if val, has := J.TokenMap[uName]; has {
 						token = val
 					} else {
-						wg.Done()
 						return
 					}
 
 					// 获取商品详情
 					gd := FindGoodsDetail(goodsId, token)
 					if gd == nil {
-						wg.Done()
 						return
 					}
 
@@ -108,7 +108,6 @@ func StartWinOrders() {
 						J.IsReset = true
 						//ResetChan <- true
 						fmt.Println("reset: ", J, job, ResetChan)
-						wg.Done()
 						return
 					}
 
@@ -118,7 +117,6 @@ func StartWinOrders() {
 
 					// 判断是否使用折扣并且无折扣价
 					if good.IsDiscount == 1 && gd.Data.EstimatePrice == 0 {
-						wg.Done()
 						return
 					}
 
@@ -131,7 +129,6 @@ func StartWinOrders() {
 						// 获取订单详情
 						order := GetPrepareOrderWithGoods(goodsId, countString, pointMax, pointRemain, token)
 						if order == nil || order.Code != 0 || order.Data == nil {
-							wg.Done()
 							return
 						}
 
@@ -150,8 +147,6 @@ func StartWinOrders() {
 
 						// 支付确认
 						PayConfirm(order, token, username, gd)
-
-						wg.Done()
 
 					}
 
