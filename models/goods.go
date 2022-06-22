@@ -76,6 +76,30 @@ type GetMemberPointResData struct {
 	ClosedPoint float64 `json:"closedPoint"`
 }
 
+type GetOrderCouponRes struct {
+	Code int                    `json:"code"`
+	Data *GetOrderCouponDataRes `json:"data"`
+}
+
+type GetOrderCouponDataRes struct {
+	Data  []*GetOrderCouponDataDataRes `json:"data"`
+	Total int                          `json:"total"`
+}
+
+type GetOrderCouponDataDataRes struct {
+	CouponId       string  `json:"couponId"`
+	CouponName     string  `json:"couponName"`
+	CouponType     int     `json:"couponType"`
+	CouponDesc     string  `json:"couponDesc"`
+	Desc           string  `json:"desc"`
+	EachAmount     float64 `json:"eachAmount"`
+	EndTime        string  `json:"endTime"`
+	StartTime      string  `json:"startTime"`
+	Amount         float64 `json:"amount"`
+	ActivityStatus int     `json:"activityStatus"`
+	ActivityName   string  `json:"activityName"`
+	ActivityDesc   string  `json:"activityDesc"`
+}
 type ConfirmOrderWithGoodsRes struct {
 	Code      int    `json:"code"`
 	Data      bool   `json:"data"`

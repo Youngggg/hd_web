@@ -28,7 +28,7 @@ var (
 		//"13514105572": "aa123456",
 		//"13401159806": "aa123456",
 		//"13345539412": "liyu1201",
-		//"18818693510": "aa123456",
+		"18818693510": "aa123456",
 	}
 
 	J *MJob
@@ -136,14 +136,36 @@ func StartWinOrders() {
 						point := GetMemberPointClosed(token)
 
 						// 积分满足则重新下单
-						if good.UsePoints == 1 && point != nil && point.Data != nil && int(math.Floor(point.Data.Data)) >= order.Data.PointMax {
-							pointMax = strconv.Itoa(order.Data.PointMax)
-							pointRemain = strconv.Itoa(int(math.Floor(point.Data.Data)))
+						if good.UsePoints == 1 && point != nil && point.Data != nil && int(math.Floor(point.Data.Data)) > 0 {
+							if int(math.Floor(point.Data.Data)) > order.Data.PointMax {
+								pointMax = strconv.Itoa(order.Data.PointMax)
+								pointRemain = strconv.Itoa(int(math.Floor(point.Data.Data)) - order.Data.PointMax)
+
+							} else {
+								pointMax = strconv.Itoa(int(math.Floor(point.Data.Data)))
+								pointRemain = "0"
+							}
 							order = GetPrepareOrderWithGoods(goodsId, countString, pointMax, pointRemain, token)
 						}
 
+						// 获取优惠券详情
+						coupon := GetOrderCouponWithGoods(order, goodsId, countString, token)
+						// 有优惠券则重新下单
+						couponId := ""
+						maxCouponCount := 0
+						if good.UseCoupon == 1 && coupon != nil && coupon.Data != nil && coupon.Data.Total > 0 {
+							for _, c := range coupon.Data.Data {
+								if int(c.Amount) > maxCouponCount {
+									maxCouponCount = int(c.Amount)
+									couponId = c.CouponId
+								}
+							}
+
+							GetNextPrepareOrderWithGoods(order.Data.MainOrderId, countString, strconv.Itoa(maxCouponCount), pointMax, pointRemain, goodsId, token)
+						}
+
 						// 确认订单
-						ConfirmOrderWithGoods(order, goodsId, countString, pointMax, token)
+						ConfirmOrderWithGoods(order, goodsId, countString, pointMax, couponId, token)
 
 						// 支付确认
 						PayConfirm(order, token, username, gd)

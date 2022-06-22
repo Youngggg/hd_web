@@ -18,6 +18,7 @@ const (
 	FindGoodsDetailUrl       = "https://service.cdfhnms.com/mini/findGoodsDetailByIdAlways"
 	GetPrepareOrderUrl       = "https://service.cdfhnms.com/mini/getPrepareOrderWithGoods"
 	GetMemberPointUrl        = "https://service.cdfhnms.com/mini/getMemberPointClosed"
+	GetOrderCouponUrl        = "https://service.cdfhnms.com/infrastructure/getOrderCouponWithGoods"
 	ConfirmOrderWithGoodsUrl = "https://service.cdfhnms.com/core/confirmOrderWithGoods"
 	PayConfirmUrl            = "https://service.cdfhnms.com/infrastructure/payConfirm"
 
@@ -103,6 +104,28 @@ func GetPrepareOrderWithGoods(goodsId, count, point, pointRemain, token string) 
 	return &getPrepareOrderWithGoodsRes
 }
 
+// 获取订单详情
+func GetNextPrepareOrderWithGoods(mainOrderId, count, couponAmount, point, pointRemain, goodsId, token string) *GetPrepareOrderWithGoodsRes {
+	getPrepareOrderWithGoodsRes := GetPrepareOrderWithGoodsRes{}
+
+	res, err := GetRestyClient().R().
+		SetHeader("token", token).
+		SetQueryParam("goodsId", goodsId).
+		SetQueryParam("count", count).
+		SetQueryParam("point", point).
+		SetQueryParam("pointRemain", pointRemain).
+		SetQueryParam("couponAmount", couponAmount).
+		SetQueryParam("mainOrderId", mainOrderId).
+		SetResult(&getPrepareOrderWithGoodsRes).
+		Get(GetPrepareOrderUrl)
+	if err != nil {
+		logs.Error(err)
+	}
+	logs.Info(res)
+
+	return &getPrepareOrderWithGoodsRes
+}
+
 // 获取积分详情
 func GetMemberPointClosed(token string) *GetMemberPointRes {
 	result := GetMemberPointRes{}
@@ -119,7 +142,27 @@ func GetMemberPointClosed(token string) *GetMemberPointRes {
 	return &result
 }
 
-func ConfirmOrderWithGoods(order *GetPrepareOrderWithGoodsRes, goodsId, count, point, token string) {
+// 获取优惠券详情
+func GetOrderCouponWithGoods(order *GetPrepareOrderWithGoodsRes, goodsId, count, token string) *GetOrderCouponRes {
+	result := GetOrderCouponRes{}
+	res, err := GetRestyClient().R().
+		SetHeader("token", token).
+		SetHeader("stockId", "6922").
+		SetQueryParam("count", count).
+		SetQueryParam("goodsId", goodsId).
+		SetQueryParam("mainOrderId", order.Data.MainOrderId).
+		SetQueryParam("stockId", "6922").
+		SetResult(&result).
+		Get(GetOrderCouponUrl)
+	if err != nil {
+		logs.Error(err)
+	}
+	log.Info(res)
+	return &result
+}
+
+// 确认订单
+func ConfirmOrderWithGoods(order *GetPrepareOrderWithGoodsRes, goodsId, count, point, couponId, token string) {
 	result := ConfirmOrderWithGoodsRes{}
 
 	params := map[string]string{
@@ -137,6 +180,7 @@ func ConfirmOrderWithGoods(order *GetPrepareOrderWithGoodsRes, goodsId, count, p
 		"memberCoupons":  "",
 		"mac":            order.Data.Mac,
 		"terminalId":     "6",
+		"couponId":       couponId,
 	}
 	res, err := GetRestyClient().R().
 		SetHeader("token", token).
@@ -152,6 +196,7 @@ func ConfirmOrderWithGoods(order *GetPrepareOrderWithGoodsRes, goodsId, count, p
 	logs.Info(res)
 }
 
+// 确认付款
 func PayConfirm(order *GetPrepareOrderWithGoodsRes, token, username string, gd *FindGoodsDetailRes) {
 	result := PayConfirmRes{}
 	res, err := GetRestyClient().R().
@@ -171,6 +216,7 @@ func PayConfirm(order *GetPrepareOrderWithGoodsRes, token, username string, gd *
 	logs.Info(res)
 }
 
+// 钉钉通知
 func DingdingWarning(username string, gd *FindGoodsDetailRes) {
 	gdJson, _ := json.Marshal(gd)
 	msg := Msg{
