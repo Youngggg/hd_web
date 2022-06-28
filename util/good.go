@@ -211,21 +211,25 @@ func PayConfirm(order *GetPrepareOrderWithGoodsRes, token, username string, gd *
 		logs.Error(err)
 	}
 	if result.Code == 0 {
-		DingdingWarning(username, gd)
+		DingdingWarning(username, gd, &result, res.Body())
 	}
 	logs.Info(res)
 }
 
 // 钉钉通知
-func DingdingWarning(username string, gd *FindGoodsDetailRes) {
+func DingdingWarning(username string, gd *FindGoodsDetailRes, res *PayConfirmRes, resBody []byte) {
 	gdJson, _ := json.Marshal(gd)
+	resJson, _ := json.Marshal(res)
+
 	msg := Msg{
 		MsgType: "markdown",
 		Markdown: &Markdown{
 			Title: "hd下单成功提示",
 			Text: "> **hd下单成功账号:**" + username + "\n" +
 				"\n" + "> **商品名称:**" + gd.Data.ProductName + "\n" +
-				"\n" + "> **商品详情:**" + string(gdJson) + "\n",
+				"\n" + "> **商品详情:**" + string(gdJson) + "\n" +
+				"\n" + "> **下单响应:**" + string(resJson) + "\n" +
+				"\n" + "> *下单详情:**" + string(resBody) + "\n",
 		},
 		At: &At{
 			AtMobiles: []string{"18818693510"},
