@@ -29,6 +29,7 @@ var (
 		//"13401159806": "aa123456",
 		//"13345539412": "liyu1201",
 		"18818693510": "aa123456",
+		"15256002129": "liyu1201",
 	}
 
 	J *MJob
@@ -177,7 +178,7 @@ func StartWinOrders() {
 			}
 
 			wg.Wait()
-			time.Sleep(100 * time.Microsecond)
+			time.Sleep(200 * time.Microsecond)
 
 		}
 
