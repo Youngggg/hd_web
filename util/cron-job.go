@@ -178,8 +178,6 @@ func StartWinOrders() {
 			}
 
 			wg.Wait()
-			time.Sleep(200 * time.Microsecond)
-
 		}
 
 	}
