@@ -180,6 +180,7 @@ func StartWinOrders() {
 			wg.Wait()
 		}
 
+		time.Sleep(50 * time.Microsecond)
 	}
 
 }
