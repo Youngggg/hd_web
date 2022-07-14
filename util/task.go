@@ -10,23 +10,29 @@ import (
 	. "hd_web/models"
 )
 
-func StartOrders() error {
-
+func StartOrders15256002129() error {
 	// 初始化商品
 	InitGoods()
-
 	for {
-
-		for username, password := range AccountMap {
-			//go func(u, p string) {
-			StartOrdersWithUser(username, password)
-			//}(username, password)
-		}
-
-		time.Sleep(1 * time.Second)
-
+		StartOrdersWithUser("15256002129", "liyu1201")
+		time.Sleep(500 * time.Microsecond)
 	}
-
+}
+func StartOrders13401159806() error {
+	// 初始化商品
+	InitGoods()
+	for {
+		StartOrdersWithUser("13401159806", "aa123456")
+		time.Sleep(500 * time.Microsecond)
+	}
+}
+func StartOrders13155347128() error {
+	// 初始化商品
+	InitGoods()
+	for {
+		StartOrdersWithUser("13155347128", "aa123456")
+		time.Sleep(500 * time.Microsecond)
+	}
 }
 
 func StartOrdersWithUser(username, password string) {
