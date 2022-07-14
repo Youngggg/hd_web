@@ -5,11 +5,12 @@ import (
 	"log"
 	"time"
 
+	"github.com/beego/beego/v2/adapter/toolbox"
+	_ "github.com/go-sql-driver/mysql"
+
 	"hd_web/controllers"
 	_ "hd_web/routers"
 	"hd_web/util"
-
-	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/beego/beego/v2/client/orm"
 	"github.com/beego/beego/v2/core/logs"
@@ -77,9 +78,11 @@ func init() {
 }
 
 func main() {
-	//util.CronStart() //启动定时任务
 
-	go util.StartWinOrders() // 抢单
+	// 定时任务
+	util.InitTask()
+	toolbox.StartTask()
+	defer toolbox.StopTask()
 
 	log.Printf("\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n浏览器访问：http://localhost:%s\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", port)
 	beego.Run() //下面的代码不会执行，需要执行的代码放到上面

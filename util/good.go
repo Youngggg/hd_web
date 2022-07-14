@@ -2,6 +2,7 @@ package util
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/beego/beego/v2/core/logs"
@@ -27,8 +28,8 @@ const (
 
 func init() {
 	_resty = resty.New().
-		SetTimeout(10 * time.Second).
-		SetRetryCount(2).
+		SetTimeout(30 * time.Second).
+		SetRetryCount(0).
 		SetRetryWaitTime(1 * time.Second).
 		SetRetryMaxWaitTime(1 * time.Second)
 }
@@ -157,7 +158,7 @@ func GetOrderCouponWithGoods(order *GetPrepareOrderWithGoodsRes, goodsId, count,
 	if err != nil {
 		logs.Error(err)
 	}
-	log.Info(res)
+	fmt.Println(res)
 	return &result
 }
 

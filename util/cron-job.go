@@ -11,11 +11,7 @@ import (
 	. "hd_web/models"
 
 	"github.com/beego/beego/v2/core/logs"
-	beego "github.com/beego/beego/v2/server/web"
-	"github.com/robfig/cron"
 )
-
-type MyJob struct{}
 
 type MJob struct {
 	TokenMap map[string]string
@@ -36,33 +32,16 @@ var (
 
 	J *MJob
 
-	ResetChan = make(chan bool)
+	goods []Goods
 )
 
-func (job MyJob) Run() {
-	logs.Info("职位统计任务，单任务")
-	GetJobs()
+func InitGoods() {
+	goods = GetGoods()
 }
 
-func CronStart() {
-	runCronStr, _ := beego.AppConfig.String("runCron")
-	runCron, err := strconv.ParseBool(runCronStr)
-	if err == nil && runCron {
-		c := cron.New()
-		cron, _ := beego.AppConfig.String("cron")
-		spec := cron
-		c.AddFunc(spec, func() {
-			GetJobs()
-			logs.Info("职位统计任务已执行！")
-		})
-		//c.AddJob(spec, MyJob{})
-		c.Start()
+func StartWinOrders() error {
 
-		//select {}//作用是在main函数中阻塞不退出
-	}
-}
-
-func StartWinOrders() {
+	InitGoods()
 
 	for {
 
@@ -72,9 +51,9 @@ func StartWinOrders() {
 			InitJ(username, password)
 
 			// 获取商品列表
-			goods := GetGoods()
 			if len(goods) == 0 {
-				time.Sleep(time.Minute)
+				goods = GetGoods()
+				continue
 			}
 
 			fmt.Printf("J: %p", J)
@@ -109,8 +88,6 @@ func StartWinOrders() {
 
 					if gd.Code == 1024 || gd.Message == "需重新登录" {
 						J.IsReset = true
-						//ResetChan <- true
-						fmt.Println("reset: ", J, job, ResetChan)
 						return
 					}
 
@@ -149,6 +126,9 @@ func StartWinOrders() {
 								pointRemain = "0"
 							}
 							order = GetPrepareOrderWithGoods(goodsId, countString, pointMax, pointRemain, token)
+						}
+						if order == nil || order.Code != 0 || order.Data == nil {
+							return
 						}
 
 						// 获取优惠券详情
@@ -209,6 +189,7 @@ func InitJ(username, password string) {
 		J = &MJob{}
 		J.TokenMap = map[string]string{}
 		J.TokenMap[username] = LoginWithPassword(username, password)
+		return
 	}
 
 	if J.IsReset {
@@ -216,27 +197,7 @@ func InitJ(username, password string) {
 		J = &MJob{}
 		J.TokenMap = map[string]string{}
 		J.TokenMap[username] = LoginWithPassword(username, password)
+		return
 	}
-	//select {
-	//case reset := <-ResetChan:
-	//
-	//	fmt.Println("reset chan: ", reset)
-	//	if reset {
-	//		time.Sleep(2 * time.Minute)
-	//		J = &MJob{}
-	//		J.TokenMap = map[string]string{}
-	//		J.TokenMap[username] = LoginWithPassword(username, password)
-	//	}
-	//
-	//default:
-	//
-	//	// 获取用户token
-	//	if J == nil {
-	//		J = &MJob{}
-	//		J.TokenMap = map[string]string{}
-	//		J.TokenMap[username] = LoginWithPassword(username, password)
-	//	} else {
-	//
-	//	}
 
 }
