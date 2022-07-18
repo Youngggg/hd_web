@@ -54,6 +54,8 @@ func (c *GoodsAPIController) AddGoods() {
 		c.Data["json"] = controllers.SuccessData(id)
 	}
 
+	util.Datagoods = nil
+
 	_ = c.ServeJSON()
 }
 
@@ -98,6 +100,7 @@ func (c *GoodsAPIController) UpdateGoods() {
 	} else {
 		c.Data["json"] = controllers.SuccessData(upId)
 	}
+	util.Datagoods = nil
 	c.ServeJSON()
 }
 
@@ -166,6 +169,7 @@ func (c *GoodsAPIController) DisableGoods() {
 	} else {
 		c.Data["json"] = controllers.SuccessData(id64)
 	}
+	util.Datagoods = nil
 	c.ServeJSON()
 }
 
@@ -184,6 +188,7 @@ func (c *GoodsAPIController) EnableGoods() {
 	} else {
 		c.Data["json"] = controllers.SuccessData(id64)
 	}
+	util.Datagoods = nil
 	c.ServeJSON()
 }
 
@@ -202,5 +207,6 @@ func (c *GoodsAPIController) DeleteGoods() {
 	} else {
 		c.Data["json"] = controllers.SuccessData(id64)
 	}
+	util.Datagoods = nil
 	c.ServeJSON()
 }

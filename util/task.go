@@ -13,14 +13,14 @@ import (
 )
 
 var (
-	goods    []Goods
-	tokenMap = map[string]string{}
-	resetMap = map[string]bool{}
+	Datagoods []Goods
+	tokenMap  = map[string]string{}
+	resetMap  = map[string]bool{}
 )
 
 func InitGoods() {
-	if len(goods) == 0 {
-		goods = GetGoods()
+	if len(Datagoods) == 0 {
+		Datagoods = GetGoods()
 	}
 }
 
@@ -73,7 +73,7 @@ func StartOrdersWithUser(username, password string) {
 	var wg sync.WaitGroup
 
 	// 循环商品
-	for _, good := range goods {
+	for _, good := range Datagoods {
 
 		if tokenMap[username] == "" {
 			break
