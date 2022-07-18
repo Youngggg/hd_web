@@ -52,11 +52,11 @@ func LoginWithPassword(username, password string) string {
 		logs.Error(err)
 	}
 
-	if result.Data != nil {
+	logs.Info(res)
+	if &result != nil && result.Data != nil {
 		return result.Data.Token
 	}
 
-	logs.Info(res)
 	return ""
 }
 

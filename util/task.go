@@ -7,15 +7,45 @@ import (
 	"sync"
 	"time"
 
+	"github.com/beego/beego/v2/core/logs"
+
 	. "hd_web/models"
 )
+
+var (
+	goods    []Goods
+	tokenMap = map[string]string{}
+	resetMap = map[string]bool{}
+)
+
+func InitGoods() {
+	if len(goods) == 0 {
+		goods = GetGoods()
+	}
+}
+
+func InitLogin(username, password string) {
+
+	if val, _ := resetMap[username]; val {
+		time.Sleep(2 * time.Minute)
+		tokenMap[username] = LoginWithPassword(username, password)
+		resetMap[username] = false
+		return
+	}
+
+	if _, has := tokenMap[username]; has {
+		return
+	} else {
+		tokenMap[username] = LoginWithPassword(username, password)
+	}
+}
 
 func StartOrders15256002129() error {
 	// 初始化商品
 	InitGoods()
 	for {
 		StartOrdersWithUser("15256002129", "liyu1201")
-		time.Sleep(500 * time.Microsecond)
+		time.Sleep(1 * time.Second)
 	}
 }
 func StartOrders13401159806() error {
@@ -23,7 +53,7 @@ func StartOrders13401159806() error {
 	InitGoods()
 	for {
 		StartOrdersWithUser("13401159806", "aa123456")
-		time.Sleep(500 * time.Microsecond)
+		time.Sleep(1 * time.Second)
 	}
 }
 func StartOrders13155347128() error {
@@ -31,21 +61,21 @@ func StartOrders13155347128() error {
 	InitGoods()
 	for {
 		StartOrdersWithUser("13155347128", "aa123456")
-		time.Sleep(500 * time.Microsecond)
+		time.Sleep(1 * time.Second)
 	}
 }
 
 func StartOrdersWithUser(username, password string) {
 
 	// 初始化token && 用户重新登录
-	InitJ(username, password)
+	InitLogin(username, password)
 
 	var wg sync.WaitGroup
 
 	// 循环商品
 	for _, good := range goods {
 
-		if J.IsReset {
+		if tokenMap[username] == "" {
 			break
 		}
 
@@ -58,7 +88,7 @@ func StartOrdersWithUser(username, password string) {
 			goodsId := strings.Replace(good.Url, "https://mini.hndutyfree.com.cn/#/pages/publicPages/goodDetails/index?goodsId=", "", -1)
 
 			token := ""
-			if val, has := J.TokenMap[uName]; has {
+			if val, has := tokenMap[uName]; has {
 				token = val
 			} else {
 				return
@@ -71,7 +101,7 @@ func StartOrdersWithUser(username, password string) {
 			}
 
 			if gd.Code == 1024 || gd.Message == "需重新登录" {
-				J.IsReset = true
+				resetMap[uName] = true
 				return
 			}
 
@@ -142,4 +172,20 @@ func StartOrdersWithUser(username, password string) {
 		}(good, username)
 
 	}
+}
+
+func GetGoods() []Goods {
+	goods := new(Goods)
+	goodsList, err := goods.GetAll()
+	if err != nil {
+		logs.Error(err)
+		time.Sleep(1 * time.Minute)
+		return nil
+	}
+	if goodsList == nil {
+		time.Sleep(1 * time.Minute)
+		return nil
+	}
+
+	return goodsList
 }
