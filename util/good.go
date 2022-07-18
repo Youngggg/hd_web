@@ -7,7 +7,6 @@ import (
 
 	"github.com/beego/beego/v2/core/logs"
 	"github.com/go-resty/resty/v2"
-	"github.com/siddontang/go/log"
 
 	. "hd_web/models"
 )
@@ -74,7 +73,7 @@ func FindGoodsDetail(goodsId, token string) *FindGoodsDetailRes {
 	}
 	if findGoodsDetailRes.Data != nil {
 		if goodsId == "01C057572" {
-			log.Info(res)
+			logs.Info(res)
 		}
 		logs.Info(time.Now().Format("2006-01-02 15:04:05"), " | 商品Id: ", findGoodsDetailRes.Data.GoodsId, " | 商品数量: ", findGoodsDetailRes.Data.Count)
 	} else {
