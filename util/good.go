@@ -71,6 +71,7 @@ func FindGoodsDetail(goodsId, token string) *FindGoodsDetailRes {
 
 	if err != nil {
 		logs.Error(err)
+		return nil
 	}
 	if findGoodsDetailRes.Data != nil {
 		if goodsId == "01C057572" {
@@ -99,6 +100,7 @@ func GetPrepareOrderWithGoods(goodsId, count, point, pointRemain, token string) 
 		Get(GetPrepareOrderUrl)
 	if err != nil {
 		logs.Error(err)
+		return nil
 	}
 	logs.Info(res)
 
@@ -121,6 +123,7 @@ func GetNextPrepareOrderWithGoods(mainOrderId, count, couponAmount, point, point
 		Get(GetPrepareOrderUrl)
 	if err != nil {
 		logs.Error(err)
+		return nil
 	}
 	logs.Info(res)
 
@@ -138,6 +141,7 @@ func GetMemberPointClosed(token string) *GetMemberPointRes {
 
 	if err != nil {
 		logs.Error(err)
+		return nil
 	}
 	logs.Info(res)
 	return &result
@@ -157,6 +161,7 @@ func GetOrderCouponWithGoods(order *GetPrepareOrderWithGoodsRes, goodsId, count,
 		Get(GetOrderCouponUrl)
 	if err != nil {
 		logs.Error(err)
+		return nil
 	}
 	fmt.Println(res)
 	return &result
@@ -193,6 +198,7 @@ func ConfirmOrderWithGoods(order *GetPrepareOrderWithGoodsRes, goodsId, count, p
 
 	if err != nil {
 		logs.Error(err)
+		return
 	}
 	logs.Info(res)
 }
