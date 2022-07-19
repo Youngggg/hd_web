@@ -171,7 +171,7 @@ func StartOrdersWithUser(username, password string) {
 
 		}(good, username)
 
-		time.Sleep(20 * time.Microsecond)
+		time.Sleep(30 * time.Microsecond)
 	}
 }
 
