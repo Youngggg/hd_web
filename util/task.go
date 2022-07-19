@@ -45,7 +45,6 @@ func StartOrders15256002129() error {
 	InitGoods()
 	for {
 		StartOrdersWithUser("15256002129", "liyu1201")
-		time.Sleep(1 * time.Second)
 	}
 }
 func StartOrders13401159806() error {
@@ -53,7 +52,6 @@ func StartOrders13401159806() error {
 	InitGoods()
 	for {
 		StartOrdersWithUser("13401159806", "aa123456")
-		time.Sleep(1 * time.Second)
 	}
 }
 func StartOrders13155347128() error {
@@ -61,7 +59,6 @@ func StartOrders13155347128() error {
 	InitGoods()
 	for {
 		StartOrdersWithUser("13155347128", "aa123456")
-		time.Sleep(1 * time.Second)
 	}
 }
 
