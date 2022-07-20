@@ -80,9 +80,11 @@ func init() {
 func main() {
 
 	// 定时任务
-	util.InitTask()
-	toolbox.StartTask()
-	defer toolbox.StopTask()
+	go func() {
+		util.InitTask()
+		toolbox.StartTask()
+		defer toolbox.StopTask()
+	}()
 
 	log.Printf("\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n浏览器访问：http://localhost:%s\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", port)
 	beego.Run() //下面的代码不会执行，需要执行的代码放到上面
