@@ -5,17 +5,16 @@ import (
 	"log"
 	"time"
 
-	"github.com/beego/beego/v2/adapter/toolbox"
 	_ "github.com/go-sql-driver/mysql"
-
-	"hd_web/controllers"
-	_ "hd_web/routers"
-	"hd_web/util"
 
 	"github.com/beego/beego/v2/client/orm"
 	"github.com/beego/beego/v2/core/logs"
 	"github.com/beego/beego/v2/server/web"
 	beego "github.com/beego/beego/v2/server/web"
+
+	"hd_web/controllers"
+	_ "hd_web/routers"
+	"hd_web/util"
 )
 
 var port string
@@ -80,11 +79,14 @@ func init() {
 func main() {
 
 	// 定时任务
-	//go func() {
-	util.InitTask()
-	toolbox.StartTask()
-	defer toolbox.StopTask()
-	//}()
+	go func() {
+		_ := util.StartOrders15256002129()
+		_ := util.StartOrders13401159806()
+		_ := util.StartOrders13155347128()
+		//util.InitTask()
+		//toolbox.StartTask()
+		//defer toolbox.StopTask()
+	}()
 
 	log.Printf("\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n浏览器访问：http://localhost:%s\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", port)
 	beego.Run() //下面的代码不会执行，需要执行的代码放到上面

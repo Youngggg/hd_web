@@ -216,7 +216,11 @@ func PayConfirm(order *GetPrepareOrderWithGoodsRes, token, username string, gd *
 
 	if err != nil {
 		logs.Error(err)
+		return
 	}
+
+	re := res.Body()
+	json.Unmarshal(re, &result)
 	if result.Code == 0 {
 		DingdingWarning(username, gd, &result, res.Body())
 	}
