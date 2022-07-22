@@ -74,7 +74,7 @@ func FindGoodsDetail(goodsId, token string) *FindGoodsDetailRes {
 		return nil
 	}
 	if findGoodsDetailRes.Data != nil {
-		logs.Info(res)
+// 		logs.Info(res)
 		logs.Info(time.Now().Format("2006-01-02 15:04:05"), " | 商品Id: ", findGoodsDetailRes.Data.GoodsId, " | 商品数量: ", findGoodsDetailRes.Data.Count)
 	} else {
 		re := res.Body()
