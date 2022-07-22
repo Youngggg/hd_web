@@ -27,11 +27,11 @@ const (
 
 func init() {
 	_resty = resty.New().
-		SetTimeout(2*time.Second).
-		SetHeader("Connection", "keep-alive")
-	//SetRetryCount(0).
-	//	SetRetryWaitTime(1 * time.Second).
-	//	SetRetryMaxWaitTime(1 * time.Second)
+		SetTimeout(1*time.Second)
+// 		SetHeader("Connection", "keep-alive")
+// 		SetRetryCount(0).
+// 		SetRetryWaitTime(1 * time.Second).
+// 		SetRetryMaxWaitTime(1 * time.Second)
 }
 
 func GetRestyClient() *resty.Client {
