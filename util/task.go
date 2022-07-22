@@ -40,20 +40,20 @@ func InitLogin(username, password string) {
 	}
 }
 
-func StartOrders15256002129() error {
+func StartOrders13345539412() error {
 	// 初始化商品
 	InitGoods()
 	for {
-		StartOrdersWithUser("15256002129", "liyu1201")
-		time.Sleep(5 * time.Second)
+		StartOrdersWithUser("13345539412", "liyu1201")
+		time.Sleep(500 * time.Microsecond)
 	}
 }
-func StartOrders13401159806() error {
+func StartOrders18818693510() error {
 	// 初始化商品
 	InitGoods()
 	for {
-		StartOrdersWithUser("13401159806", "aa123456")
-		time.Sleep(5 * time.Second)
+		StartOrdersWithUser("18818693510", "aa123456")
+		time.Sleep(500 * time.Microsecond)
 	}
 }
 func StartOrders13155347128() error {
@@ -61,7 +61,7 @@ func StartOrders13155347128() error {
 	InitGoods()
 	for {
 		StartOrdersWithUser("13155347128", "aa123456")
-		time.Sleep(5 * time.Second)
+		time.Sleep(500 * time.Microsecond)
 	}
 }
 
@@ -171,7 +171,7 @@ func StartOrdersWithUser(username, password string) {
 
 		}(good, username)
 
-		time.Sleep(50 * time.Microsecond)
+		time.Sleep(10 * time.Microsecond)
 
 		wg.Wait()
 	}
